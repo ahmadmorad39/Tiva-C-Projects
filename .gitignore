@@ -1,0 +1,20 @@
+# CCS build outputs
+/Debug/
+/Release/
+/.settings/
+/bin/
+/*.out
+/*.obj
+/*.lib
+/*.hex
+/*.elf
+
+# CCS intermediate files
+*.d
+*.dep
+*.lst
+*.map
+
+# CCS IDE specific
+/.settings/
+/*.launch
