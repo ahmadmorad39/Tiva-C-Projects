@@ -21,19 +21,19 @@
 // ================================= Function prototypes ===========================================
 /**
  * *************************************************************************************************
- * @brief Configure MCU pins to work with LCD
+ * @brief Set the clock to run at 80MHz
  * @param
  * @return
  * *************************************************************************************************
  */
 void Set_Clock_80(void);
 
-
 // ================================= Main ==========================================================
 
 int main(void){
 
     Set_Clock_80();
+    seven_segment_test();
     Lcd_Init();
     Lcd_Cmd(LCD_SET_CURSOR_BEGINNING);        // Set cursor to beginning of first line
     lcd_string("Hello World", 11);        // Display the letter 'a'
@@ -53,3 +53,5 @@ void Set_Clock_80(void){
 
     SysCtlClockSet(SYSCTL_OSC_MAIN | SYSCTL_XTAL_16MHZ | SYSCTL_USE_PLL | SYSCTL_SYSDIV_2_5);
 }
+
+
