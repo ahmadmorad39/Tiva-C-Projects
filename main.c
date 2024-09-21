@@ -17,6 +17,13 @@
 /* Include my libraries */
 #include "delay/delay.h"
 #include "lcd_lib/lcd.h"
+#include "keypad/keypad.h"
+
+// ================================= Const ===========================================
+const uint8_t Key_Label[16] = {'1', '2', '3', 'A',
+                             '4', '5', '6', 'B',
+                             '7', '8', '9', 'C',
+                             '*', '0', '#', 'D'};
 
 // ================================= Function prototypes ===========================================
 /**
@@ -32,12 +39,17 @@ void Set_Clock_80(void);
 
 int main(void){
 
+    uint8_t key = 0, label = '\0';
+
     Set_Clock_80();
-    seven_segment_test();
-    Lcd_Init();
-    Lcd_Cmd(LCD_SET_CURSOR_BEGINNING);        // Set cursor to beginning of first line
-    lcd_string("Hello World", 11);        // Display the letter 'a'
+    Keypad_Init();
+    //seven_segment_test();
+    //Lcd_Init();
+    //Lcd_Cmd(LCD_SET_CURSOR_BEGINNING);        // Set cursor to beginning of first line
+    //lcd_string("Hello World", 11);        // Display the letter 'a'
     while(1){
+        key = Keypad_Click();
+        label = Key_Label[key - 1];
     }
     return 0;
 }
