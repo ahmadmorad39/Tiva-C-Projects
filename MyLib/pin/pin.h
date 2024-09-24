@@ -49,6 +49,11 @@
 #define PIN_PU          GPIO_PIN_TYPE_STD_WPU   // Push-pull with weak pull-up
 #define PIN_PD          GPIO_PIN_TYPE_STD_WPD   // Push-pull with weak pull-down
 
+// Direction
+// ---------
+#define PIN_OUT         GPIO_DIR_MODE_OUT       // Output pin
+#define PIN_IN          GPIO_DIR_MODE_IN         // Input pin
+
 // Current
 // -------
 #define CURRENT_2MA     GPIO_STRENGTH_2MA
@@ -90,7 +95,7 @@ void Pin_Init(pin_t pin);
  * @return
  * *************************************************************************************************
  */
-void Pin_write(pin_t pin, uint8_t cmd);
+void Pin_Write(pin_t pin, uint8_t cmd);
 /**
  * *************************************************************************************************
  * @brief
