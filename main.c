@@ -19,6 +19,7 @@
 #include "lcd_lib/lcd.h"
 #include "keypad/keypad.h"
 #include "gpio_interrupt/gpio_interrupt.h"
+#include "systick_timer_example/systick_timer.h"
 
 // ================================= Const ===========================================
 const uint8_t Key_Label[16] = {'1', '2', '3', 'A',
@@ -60,9 +61,14 @@ int main(void){
     led.type        = PIN_STD;
 
     // Initialize
-    Pin_Init(button);
+    //Pin_Init(button);
+    //Pin_Init(led);
+    //PortF_INT_Config();
+
+    // Systick Timer Example
+    // Initialize
     Pin_Init(led);
-    PortF_INT_Config();
+    Systick_INT_Init();
 
     while(1){
 
