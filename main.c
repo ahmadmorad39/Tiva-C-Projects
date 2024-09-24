@@ -18,6 +18,7 @@
 #include "delay/delay.h"
 #include "lcd_lib/lcd.h"
 #include "keypad/keypad.h"
+#include "gpio_interrupt/gpio_interrupt.h"
 
 // ================================= Const ===========================================
 const uint8_t Key_Label[16] = {'1', '2', '3', 'A',
@@ -39,18 +40,46 @@ void Set_Clock_80(void);
 
 int main(void){
 
-    uint8_t key = 0, label = '\0';
+    //uint8_t key = 0, label = '\0';
 
     Set_Clock_80();
-    Keypad_Init();
+    // Button
+    // ------
+    button.port     = PORT_F;
+    button.place    = PIN_4;                // SW1 on kit
+    button.dir      = PIN_IN;
+    button.current  = CURRENT_2MA;
+    button.type     = PIN_PU;
+
+    // Green LED
+    // ---------
+    led.port        = PORT_F;
+    led.place       = PIN_3;                // Green LED
+    led.dir         = PIN_OUT;
+    led.current     = CURRENT_2MA;
+    led.type        = PIN_STD;
+
+    // Initialize
+    Pin_Init(button);
+    Pin_Init(led);
+    PortF_INT_Config();
+
+    while(1){
+
+        __asm(" WFI ");                     // WFI stands for wait for interrupt.
+                                            // This instruction allow the core to enter a low power
+                                            // mode and stop executing code.
+    }
+
+    //Keypad_Init();
     //seven_segment_test();
     //Lcd_Init();
     //Lcd_Cmd(LCD_SET_CURSOR_BEGINNING);        // Set cursor to beginning of first line
     //lcd_string("Hello World", 11);        // Display the letter 'a'
-    while(1){
-        key = Keypad_Click();
-        label = Key_Label[key - 1];
-    }
+    //while(1){
+    //    key = Keypad_Click();
+    //    label = Key_Label[key - 1];
+    //}
     return 0;
 }
 
