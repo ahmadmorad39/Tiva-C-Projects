@@ -15,6 +15,7 @@
 
 /* Macros defining the memory map of the device */
 #include "inc/hw_memmap.h"
+#include "inc/hw_types.h"
 
 /* Prototypes for the system control driver */
 #include "driverlib/sysctl.h"
@@ -22,26 +23,14 @@
 /* Defines and Prototypes for GPIO API */
 #include "driverlib/gpio.h"
 
-#include "inc/hw_i2c.h"
 #include "driverlib/i2c.h"
 
 // ================================= Macro ===========================================
 
-#define RTC_ADDR 0x68 // RTC I2C address
+#define RTC_ADDR                    0x68 // RTC I2C address
+#define EEPROM_ADDR                 0x57  // EEPROM address
 // MC RTC commands
 #define RTCMD_DateTime              0x0 //  sec; min; hour; weekday; date; month; year
-#define RTCMD_Timer0                0xb
-#define RTCMD_Timer1                0xc
-#define RTCMD_Extension             0xd
-#define RTCMD_Flag                  0xe
-#define RTCMD_Control               0xf
-
-
-#define USEL_1MINUTE                0x20
-#define USEL_1SECOND                0x00
-#define UIE_ON                      0x20
-#define TD_10Hz                     0x02
-#define TIE_TE_ON                   0x10
 
 
 typedef struct {
@@ -56,6 +45,9 @@ typedef struct {
 
 TIME time;
 
+// Function to configure RTC
+void rtc_config(void);
+
 // Function to set time
 void Set_Time(uint8_t sec, uint8_t min, uint8_t hour, uint8_t dow, uint8_t dom, uint8_t month, uint8_t year);
 
@@ -67,12 +59,5 @@ float Get_temp(void);
 
 // Function to force temperature convertion
 void force_temp_conv(void);
-
-// Convert normal decimal numbers to binary coded decimal
-uint8_t decToBcd(int val);
-
-// Convert binary coded decimal to normal decimal numbers
-int bcdToDec(uint8_t val);
-
 
 #endif /* RTC_H_ */
