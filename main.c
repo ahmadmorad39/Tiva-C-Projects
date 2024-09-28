@@ -28,7 +28,6 @@ const uint8_t Key_Label[16] = {'1', '2', '3', 'A',
                              '4', '5', '6', 'B',
                              '7', '8', '9', 'C',
                              '*', '0', '#', 'D'};
-char buffer[10];
 // ================================= Function prototypes ===========================================
 /**
  * *************************************************************************************************
@@ -51,12 +50,13 @@ void Set_Clock_50(void);
 int main(void){
 
     //uint8_t key = 0, label = '\0';
-
+    float current_temp;
     Set_Clock_50();
     rtc_config();
     Set_Time(00, 34, 13, 5, 3, 1, 19);
     Get_Time();
-    printf("Current Time: %02d:%02d:%02d\n", time.hour, time.minutes, time.seconds);
+    current_temp = Get_temp();
+    //printf("Current Time: %02d:%02d:%02d\n", time.hour, time.minutes, time.seconds);
     /*
     // Button
     // ------
@@ -101,6 +101,7 @@ int main(void){
     while(1){
         DelayMs(500);
         Get_Time();
+        current_temp = Get_temp();
     }
     //    key = Keypad_Click();
     //    label = Key_Label[key - 1];
