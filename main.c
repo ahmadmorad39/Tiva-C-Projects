@@ -22,7 +22,8 @@
 #include "gpio_interrupt/gpio_interrupt.h"
 #include "systick_timer_example/systick_timer.h"
 #include "RTC/rtc.h"
-
+#include "RFID/rfid.h"
+#include "arduino_spi/arduino_spi.h"
 // ================================= Const ===========================================
 const uint8_t Key_Label[16] = {'1', '2', '3', 'A',
                              '4', '5', '6', 'B',
@@ -45,17 +46,31 @@ void Set_Clock_80(void);
  * *************************************************************************************************
  */
 void Set_Clock_50(void);
+/**
+ * *************************************************************************************************
+ * @brief Set the clock to run at 40MHz
+ * @param
+ * @return
+ * *************************************************************************************************
+ */
+void Set_Clock_40(void);
 // ================================= Main ==========================================================
 
 int main(void){
-
+    // Set the system clock to 50 MHz
+    Set_Clock_40();
+    char *val = "Hello";  // Data to send via SPI
+    uint32_t led = 0;  // LED state
+    InitSPI();
+    InitGPIO();
+    /*
     //uint8_t key = 0, label = '\0';
     float current_temp;
     Set_Clock_50();
     rtc_config();
     Set_Time(00, 34, 13, 5, 3, 1, 19);
     Get_Time();
-    current_temp = Get_temp();
+    current_temp = Get_temp(); */
     //printf("Current Time: %02d:%02d:%02d\n", time.hour, time.minutes, time.seconds);
     /*
     // Button
@@ -99,9 +114,13 @@ int main(void){
     //Lcd_Cmd(LCD_SET_CURSOR_BEGINNING);        // Set cursor to beginning of first line
     //lcd_string("Hello World", 11);        // Display the letter 'a'
     while(1){
-        DelayMs(500);
-        Get_Time();
-        current_temp = Get_temp();
+        ToggleLED(&led);  // Toggle the LED state
+        SendSPI(val);  // Send the SPI data
+        SysCtlDelay(20000000);  // Add delay to control the speed of toggling and transmission
+
+        //DelayMs(500);
+        //Get_Time();
+        //current_temp = Get_temp();
     }
     //    key = Keypad_Click();
     //    label = Key_Label[key - 1];
@@ -118,6 +137,17 @@ void Set_Clock_80(void){
     // SYSCTL_SYSDIV_2_5  : Frequency 50 MHz
 
     SysCtlClockSet(SYSCTL_OSC_MAIN | SYSCTL_XTAL_16MHZ | SYSCTL_USE_PLL | SYSCTL_SYSDIV_2_5);
+}
+
+void Set_Clock_40(void){
+    // Set the clock to run at 80MHz
+    // -----------------------------
+    // SYSCTL_OSC_MAIN    : OSC source is main osc
+    // SYSCTL_XTAL_MAIN   : External crystal is 16MHz
+    // SYSCTL_USE_PLL     : System clock is the PLL clock
+    // SYSCTL_SYSDIV_2_5  : Frequency 50 MHz
+
+    SysCtlClockSet(SYSCTL_OSC_MAIN | SYSCTL_XTAL_16MHZ | SYSCTL_USE_PLL | SYSCTL_SYSDIV_6);
 }
 
 void Set_Clock_50(void){
