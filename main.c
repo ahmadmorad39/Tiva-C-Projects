@@ -14,6 +14,8 @@
 
 /* Prototypes for the system control driver */
 #include "driverlib/sysctl.h"
+#include "tm4c123gh6pm_startup_ccs.h"
+#include "utils/uartstdio.h"
 
 /* Include my libraries */
 #include "delay/delay.h"
@@ -57,12 +59,20 @@ void Set_Clock_40(void);
 // ================================= Main ==========================================================
 
 int main(void){
+    uint8_t cardstr[4];  // Adjusted to 4 bytes for UID
+    uint8_t status;
     // Set the system clock to 50 MHz
-    Set_Clock_40();
-    char *val = "Hello";  // Data to send via SPI
-    uint32_t led = 0;  // LED state
-    InitSPI();
-    InitGPIO();
+    Set_Clock_50();
+    uart0_init();
+    //UARTStdioConfig(0, 115200, SysCtlClockGet());
+    DelayMs(500);
+    // RFID
+    MFRC522_Init();
+
+    //char *val = "Hello";  // Data to send via SPI
+    //uint32_t led = 0;  // LED state
+    //InitSPI();
+    //InitGPIO();
     /*
     //uint8_t key = 0, label = '\0';
     float current_temp;
@@ -114,8 +124,21 @@ int main(void){
     //Lcd_Cmd(LCD_SET_CURSOR_BEGINNING);        // Set cursor to beginning of first line
     //lcd_string("Hello World", 11);        // Display the letter 'a'
     while(1){
-        ToggleLED(&led);  // Toggle the LED state
-        SendSPI(val);  // Send the SPI data
+        printf("Hello, UART World!\n");
+        Detect_RFID();
+        // Request for card
+        status = MFRC522_Request(PICC_REQIDL, cardstr);
+        if (status == MI_OK) {
+            // Card found
+            printf("Card detected\n");
+            printf("Card UID: %02X %02X %02X %02X\n", cardstr[0], cardstr[1], cardstr[2], cardstr[3]);
+        } else if (status == MI_ERR) {
+            //printf("Error in RFID request (MI_ERR)\n");
+        } else {
+            //printf("Unexpected status: %02X\n", status);
+        }
+        //ToggleLED(&led);  // Toggle the LED state
+        //SendSPI(val);  // Send the SPI data
         SysCtlDelay(20000000);  // Add delay to control the speed of toggling and transmission
 
         //DelayMs(500);
