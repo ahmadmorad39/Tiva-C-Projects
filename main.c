@@ -26,6 +26,7 @@
 #include "RTC/rtc.h"
 #include "RFID/rfid.h"
 #include "arduino_spi/arduino_spi.h"
+#include "Motor/mot.h"
 // ================================= Const ===========================================
 const uint8_t Key_Label[16] = {'1', '2', '3', 'A',
                              '4', '5', '6', 'B',
@@ -56,14 +57,23 @@ void Set_Clock_50(void);
  * *************************************************************************************************
  */
 void Set_Clock_40(void);
+void Set_Clock_new(void);
 // ================================= Main ==========================================================
 
 int main(void){
     uint8_t cardstr[4];  // Adjusted to 4 bytes for UID
     uint8_t status;
     // Set the system clock to 50 MHz
-    Set_Clock_50();
+    Set_Clock_new();
     uart0_init();
+    // Get the system clock frequency
+    uint32_t clock_frequency = SysCtlClockGet();
+
+    // Print the system clock frequency (requires UART or debugger)
+    printf("System Clock: %u Hz\n", clock_frequency);
+    configuration_pwm();           // Configure PWM settings
+    motor_init();
+    Unlock_pwm();
     //UARTStdioConfig(0, 115200, SysCtlClockGet());
     DelayMs(500);
     // RFID
@@ -183,4 +193,9 @@ void Set_Clock_50(void){
 
     SysCtlClockSet(SYSCTL_OSC_MAIN | SYSCTL_XTAL_16MHZ | SYSCTL_USE_PLL | SYSCTL_SYSDIV_4);
 }
+
+void Set_Clock_new(void){
+    SysCtlClockSet(SYSCTL_SYSDIV_1 | SYSCTL_USE_OSC |   SYSCTL_OSC_MAIN | SYSCTL_XTAL_16MHZ);
+}
+
 
