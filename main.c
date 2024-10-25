@@ -27,6 +27,7 @@
 #include "RFID/rfid.h"
 #include "arduino_spi/arduino_spi.h"
 #include "Motor/mot.h"
+#include "Ultrasonic_sensor/Ultrasonic_sensor.h"
 // ================================= Const ===========================================
 const uint8_t Key_Label[16] = {'1', '2', '3', 'A',
                              '4', '5', '6', 'B',
@@ -61,6 +62,9 @@ void Set_Clock_new(void);
 // ================================= Main ==========================================================
 
 int main(void){
+    static uint32_t time_pulse; /*stores pulse on time */
+    static uint32_t distance; /* stores measured distance value */
+    static char mesg[20];  /* string format of distance value */
     uint8_t cardstr[4];  // Adjusted to 4 bytes for UID
     uint8_t status;
     // Set the system clock to 50 MHz
@@ -71,6 +75,16 @@ int main(void){
 
     // Print the system clock frequency (requires UART or debugger)
     printf("System Clock: %u Hz\n", clock_frequency);
+    Timer0ACapture_init();  /*initialize Timer0A in edge edge time */
+    UART5_init(); /* initialize UART5 module to transmit data to computer */
+        while(1)
+        {
+            time_pulse = Measure_distance(); /* take pulse duration measurement */
+            distance = (time_pulse * 10625)/10000000; /* convert pulse duration into distance */
+            sprintf(mesg, "\r\nDistance = %d cm", distance); /*convert float type distance data into string */
+            printf("%s\n", mesg);   // Print the formatted message
+            Delay(2000);
+        }
     configuration_pwm();           // Configure PWM settings
     motor_init();
     Unlock_pwm();
@@ -197,5 +211,4 @@ void Set_Clock_50(void){
 void Set_Clock_new(void){
     SysCtlClockSet(SYSCTL_SYSDIV_1 | SYSCTL_USE_OSC |   SYSCTL_OSC_MAIN | SYSCTL_XTAL_16MHZ);
 }
-
 

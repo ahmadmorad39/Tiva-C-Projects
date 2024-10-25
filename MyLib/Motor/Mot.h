@@ -20,9 +20,11 @@
 
 /* Defines and Prototypes for GPIO API */
 #include "driverlib/gpio.h"
+#include "driverlib/pwm.h"
 
 #include "pin/pin.h"
 #include "delay/delay.h"
+#include "inc/tm4c123gh6pm.h"
 // ================================= variable =========================================
 volatile pin_t SOL0, SOL1;
 static uint8_t TMR_1MS_PULSE = 0;             // Solenoid Pulse period counter
@@ -38,7 +40,6 @@ typedef enum
     MOT_POS_UNLOCKED,
     MOT_POS_LOCKED,
 } MOT_POSITIONS;
-
 // ================================= Function prototypes ===========================================
 /**
  * *************************************************************************************************
@@ -49,5 +50,7 @@ typedef enum
  */
 void motor_init(void);
 void Unlock(void);
+void Unlock_pwm(void);
 void Relock(void);
+void configuration_pwm(void);
 #endif /* MOT_H_ */
